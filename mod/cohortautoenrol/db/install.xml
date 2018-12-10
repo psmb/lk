@@ -4,7 +4,7 @@
     xsi:noNamespaceSchemaLocation="../../../lib/xmldb/xmldb.xsd"
 >
   <TABLES>
-    <TABLE NAME="cohortautoenrol_dummy" COMMENT="Moodle is making me to create it">
+    <TABLE NAME="cohortautoenrol" COMMENT="Moodle is making me to create it">
       <FIELDS>
         <FIELD NAME="id" TYPE="int" LENGTH="10" NOTNULL="true" SEQUENCE="true"/>
       </FIELDS>
