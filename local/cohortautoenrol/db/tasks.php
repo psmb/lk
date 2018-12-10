@@ -3,7 +3,7 @@
 defined('MOODLE_INTERNAL') || die();
 $tasks = [
     [
-        'classname' => '\mod_cohortautoenrol\task\sync',
+        'classname' => '\local_cohortautoenrol\task\sync',
         'blocking' => 0,
         'minute' => '30',
         'hour' => '1',

@@ -1,12 +1,12 @@
 <?php
-namespace mod_cohortautoenrol\task;
+namespace local_cohortautoenrol\task;
 global $CFG;
 require_once("$CFG->dirroot/enrol/cohort/locallib.php");
 
 class sync extends \core\task\scheduled_task {
 
     public function get_name() {
-        return get_string('sync', 'mod_cohortautoenrol');
+        return get_string('sync', 'local_cohortautoenrol');
     }
 
     /**
