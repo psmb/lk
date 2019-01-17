@@ -18,10 +18,10 @@ class sync extends \core\task\scheduled_task {
         $trace = new \text_progress_trace();
 
         $groupMap = [
-		'БФ-БМ' => ['Магистратура', 'Базовая часть'],
-		'БФ-БД' => ['Бакалавриат', 'Очная форма обучения'],
-		'БФ-БВ' => ['Бакалавриат', 'Очно-заочная форма обучения'],
-		'БФ-БЗ' => ['Бакалавриат', 'Заочная форма обучения']
+            'БФ-БМ' => [['ЛК', 'Богословский факультет', 'Магистратура'], 'Базовая часть'],
+            'БФ-БД' => [['ЛК', 'Богословский факультет','Бакалавриат'], 'Очная форма обучения'],
+            'БФ-БВ' => [['ЛК', 'Богословский факультет','Бакалавриат'], 'Очно-заочная форма обучения'],
+            'БФ-БЗ' => [['ЛК', 'Богословский факультет','Бакалавриат'], 'Заочная форма обучения']
         ];
 
         $trace->output("Clearing all cohort enrollments");
@@ -50,9 +50,17 @@ class sync extends \core\task\scheduled_task {
             $monthsInSemestr = $monthsPast % 12;
             $semestr = $monthsPast % 12 < 5 ? 1 : 2;
 
+            $innerQuery = "";
+            foreach ($groupMap[$group][0] as $name) {
+                if ($innerQuery) {
+                    $innerQuery = "SELECT id FROM {course_categories} where name = '" . $name . "' and parent = ( $innerQuery )";
+                } else {
+                    $innerQuery = "SELECT id FROM {course_categories} where name = '" . $name . "'";
+                }
+            }
+
             $params['course'] = $course . ' курс';
             $params['semestr'] = $semestr . ' семестр';
-            $params['first'] = $groupMap[$group][0];
             $params['last'] = $groupMap[$group][1];
 
             $courseSql = "
@@ -60,9 +68,7 @@ class sync extends \core\task\scheduled_task {
                     SELECT id from {course_categories} where name = :last and parent = (
                         SELECT id from {course_categories} where name = :semestr and parent = (
                             SELECT id from {course_categories} where name = :course and parent = (
-				SELECT id FROM {course_categories} where name = :first and parent = (
-                                    SELECT id FROM {course_categories} where name = 'ЛК'
-                                )
+                                $query
                             )
                         )
                     )
