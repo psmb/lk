@@ -18,7 +18,10 @@ class sync extends \core\task\scheduled_task {
         $trace = new \text_progress_trace();
 
         $groupMap = [
-            'БФ-БМ' => ['Магистратура', 'Базовая часть']
+		'БФ-БМ' => ['Магистратура', 'Базовая часть'],
+		'БФ-БД' => ['Бакалавриат', 'Очная форма обучения'],
+		'БФ-БВ' => ['Бакалавриат', 'Очно-заочная форма обучения'],
+		'БФ-БЗ' => ['Бакалавриат', 'Заочная форма обучения']
         ];
 
         $trace->output("Clearing all cohort enrollments");
@@ -57,7 +60,9 @@ class sync extends \core\task\scheduled_task {
                     SELECT id from {course_categories} where name = :last and parent = (
                         SELECT id from {course_categories} where name = :semestr and parent = (
                             SELECT id from {course_categories} where name = :course and parent = (
-                                SELECT id FROM {course_categories} where name = :first
+				SELECT id FROM {course_categories} where name = :first and parent = (
+                                    SELECT id FROM {course_categories} where name = 'ЛК'
+                                )
                             )
                         )
                     )
