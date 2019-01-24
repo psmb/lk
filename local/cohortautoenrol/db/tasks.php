@@ -5,7 +5,7 @@ $tasks = [
     [
         'classname' => '\local_cohortautoenrol\task\sync',
         'blocking' => 0,
-        'minute' => '*',
+        'minute' => '*/15',
         'hour' => '*',
         'day' => '*',
         'month' => '*',
