@@ -24,7 +24,7 @@ class sync extends \core\task\scheduled_task {
         $cohortSql = "SELECT course.id AS courseid, course.fullname, joined2.cohortid, joined2.cohortidnumber FROM (
             SELECT categories.id, joined1.cohortid, joined1.cohortidnumber from (
                 SELECT context.instanceid, cohort.id AS cohortid, cohort.idnumber AS cohortidnumber FROM {cohort} AS cohort JOIN {context} as context on cohort.contextid=context.id where context.contextlevel=40
-            ) AS joined1 JOIN {course_categories} AS categories ON categories.path LIKE CONCAT('%/', joined1.instanceid, '/%')
+            ) AS joined1 JOIN {course_categories} AS categories ON categories.path LIKE CONCAT('%/', joined1.instanceid, '/%') OR categories.path LIKE CONCAT('%/', joined1.instanceid)
         ) AS joined2 JOIN {course} AS course ON course.category=joined2.id";
 
         $cohortRs = $DB->get_recordset_sql($cohortSql);
