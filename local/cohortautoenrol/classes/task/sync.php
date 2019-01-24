@@ -17,78 +17,28 @@ class sync extends \core\task\scheduled_task {
 
         $trace = new \text_progress_trace();
 
-        $groupMap = [
-            'БФ-БМ' => [['ЛК', 'Богословский факультет', 'Магистратура'], 'Базовая часть'],
-            'БФ-БД' => [['ЛК', 'Богословский факультет','Бакалавриат'], 'Очная форма обучения'],
-            'БФ-БВ' => [['ЛК', 'Богословский факультет','Бакалавриат'], 'Очно-заочная форма обучения'],
-            'БФ-БЗ' => [['ЛК', 'Богословский факультет','Бакалавриат'], 'Заочная форма обучения']
-        ];
-
         $trace->output("Clearing all cohort enrollments");
         $DB->delete_records('enrol', array('enrol' => 'cohort'));
 
         $trace->output("Creating new cohort enrollments...");
-        $cohortSql = "SELECT id, idnumber FROM {cohort}";
+        $cohortSql = "SELECT course.id AS courseid, course.fullname, joined2.cohortid, joined2.cohortidnumber FROM (
+            SELECT categories.id, joined1.cohortid, joined1.cohortidnumber from (
+                SELECT context.instanceid, cohort.id AS cohortid, cohort.idnumber AS cohortidnumber FROM {cohort} AS cohort JOIN {context} as context on cohort.contextid=context.id where context.contextlevel=40
+            ) AS joined1 JOIN {course_categories} AS categories ON categories.path LIKE CONCAT('%/', joined1.instanceid, '/%')
+        ) AS joined2 JOIN {course} AS course ON course.category=joined2.id";
 
         $cohortRs = $DB->get_recordset_sql($cohortSql);
         foreach($cohortRs as $cohortRow) {
-            preg_match('/(.+)-(.+)/', $cohortRow->idnumber, $matches);
-            $faculty = $matches[1];
-            $group = $matches[1];
-            if (!isset($groupMap[$group])) {
-                $trace->output("Invalid group " . $group);
-                break;
-            }
-            $year = $matches[2];
-
-
-            $courseStartDate = strtotime('01-09-20' . $year);
-            $secondsInMonth = 2629746;
-            $monthsPast = (time() - $courseStartDate) / $secondsInMonth;
-            $yearsPast = $monthsPast / 12;
-            $course = floor($yearsPast) + 1;
-            $monthsInSemestr = $monthsPast % 12;
-            $semestr = $monthsPast % 12 < 5 ? 1 : 2;
-
-            $innerQuery = "";
-            foreach ($groupMap[$group][0] as $name) {
-                if ($innerQuery) {
-                    $innerQuery = "SELECT id FROM {course_categories} where name = '" . $name . "' and parent = ( $innerQuery )";
-                } else {
-                    $innerQuery = "SELECT id FROM {course_categories} where name = '" . $name . "'";
-                }
-            }
-
-            $params['course'] = $course . ' курс';
-            $params['semestr'] = $semestr . ' семестр';
-            $params['last'] = $groupMap[$group][1];
-
-            $courseSql = "
-                SELECT * from {course} where category = (
-                    SELECT id from {course_categories} where name = :last and parent = (
-                        SELECT id from {course_categories} where name = :semestr and parent = (
-                            SELECT id from {course_categories} where name = :course and parent = (
-                                $query
-                            )
-                        )
-                    )
-                )
-            ";
-
-            $courseRs = $DB->get_recordset_sql($courseSql, $params);
-
-            foreach($courseRs as $courseRow) {
-                $record = (object) [
-                    'enrol' => 'cohort',
-                    'status' => '0',
-                    'courseid' => $courseRow->id,
-                    'roleid' => '9',
-                    'customint1' => $cohortRow->id,
-                    'customint2' => '0'
-                ];
-                $DB->insert_record('enrol', $record);
-                $trace->output(sprintf("  creating cohort sync in course '%s' for cohort '%s'", $courseRow->fullname, $cohortRow->idnumber));
-            }
+            $record = (object) [
+                'enrol' => 'cohort',
+                'status' => '0',
+                'courseid' => $cohortRow->courseid,
+                'roleid' => '9',
+                'customint1' => $cohortRow->cohortid,
+                'customint2' => '0'
+            ];
+            $DB->insert_record('enrol', $record);
+            $trace->output(sprintf("  creating cohort sync in course '%s' for cohort '%s'", $cohortRow->fullname, $cohortRow->cohortidnumber));
         }
 
         // Sync the cohorts now
