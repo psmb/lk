@@ -30,6 +30,11 @@
         print_error('unspecifycourseid', 'error');
     }
 
+    $isBlocked = $DB->record_exists_sql("SELECT * FROM {cohort_members} members JOIN {cohort} cohort on members.cohortid = cohort.id WHERE members.userid = $USER->id AND cohort.idnumber='blocked'");
+    if ($isBlocked) {
+        die('<h2>Ваша учетная запись заблокирована</h2><p>Обратитесь в деканат для выяснения причин.</p>');
+    }
+
     $course = $DB->get_record('course', $params, '*', MUST_EXIST);
 
     $urlparams = array('id' => $course->id);
