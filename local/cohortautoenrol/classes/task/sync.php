@@ -23,7 +23,7 @@ class sync extends \core\task\scheduled_task {
         $trace->output("Creating new cohort enrollments...");
         $cohortSql = "SELECT course.id AS courseid, course.fullname, joined2.cohortid, joined2.cohortidnumber, joined2.cohortdescription FROM (
             SELECT categories.id, joined1.cohortid, joined1.cohortidnumber, joined1.cohortdescription from (
-                SELECT context.instanceid, cohort.id AS cohortid, cohort.idnumber AS cohortidnumber, cohort.description AS cohortdescription FROM {cohort} AS cohort JOIN {context} AS context ON cohort.contextid=context.id WHERE context.contextlevel=40
+                SELECT context.instanceid, cohort.id AS cohortid, cohort.idnumber AS cohortidnumber, cohort.description AS cohortdescription FROM {cohort} AS cohort JOIN {context} AS context ON cohort.homeid=context.id WHERE context.contextlevel=40
             ) AS joined1 JOIN {course_categories} AS categories ON categories.path LIKE CONCAT('%/', joined1.instanceid, '/%') OR categories.path LIKE CONCAT('%/', joined1.instanceid)
         ) AS joined2 JOIN {course} AS course ON course.category=joined2.id";
 

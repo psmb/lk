@@ -45,6 +45,10 @@ class cohort_edit_form extends moodleform {
         $options = $this->get_category_options($cohort->contextid);
         $mform->addElement('select', 'contextid', get_string('context', 'role'), $options);
 
+        // HACK
+        $homeidOptions = [0 => 'Нет домашней категории'] + $options;
+        $mform->addElement('select', 'homeid', 'Домашняя категория (все курсы из этой категории будут доступны автоматически)', $homeidOptions);
+
         $mform->addElement('text', 'idnumber', get_string('idnumber', 'cohort'), 'maxlength="254" size="50"');
         $mform->setType('idnumber', PARAM_RAW); // Idnumbers are plain text, must not be changed.
 
