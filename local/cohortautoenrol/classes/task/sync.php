@@ -18,7 +18,9 @@ class sync extends \core\task\scheduled_task {
         $trace = new \text_progress_trace();
 
         $trace->output("Clearing all cohort enrollments");
-        $DB->delete_records('enrol', array('enrol' => 'cohort'));
+        $DB->delete_records('enrol', ['enrol' => 'cohort']);
+        $DB->delete_records('role_assignments', ['component' => 'enrol_cohort']);
+        $DB->execute("DELETE ue FROM {user_enrolments} ue LEFT JOIN {enrol} e ON (e.id = ue.enrolid AND e.enrol = 'cohort') WHERE e.id IS NULL");
 
         $trace->output("Creating new cohort enrollments...");
         $cohortSql = "SELECT course.id AS courseid, course.fullname, joined2.cohortid, joined2.cohortidnumber, joined2.cohortdescription FROM (
