@@ -7,8 +7,6 @@ list($context, $course, $cm) = get_context_info_array($contextid);
 
 // Security.
 require_login($course, false, $cm);
-require_capability('moodle/role:assign', $context);
-
 
 $categoryContext = $DB->get_record_sql("SELECT path FROM {context} WHERE contextlevel=40 AND instanceid=$course->category");
 $categoryContextPath = $categoryContext->path;
