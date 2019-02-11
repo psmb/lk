@@ -29,6 +29,7 @@ foreach($rows as $row) {
         $message->userfrom = $USER;
         $message->userto = $user;
         $message->subject = "ЛК Запрос - $user->firstname $user->lastname";
+        $message->fullmessageformat = FORMAT_PLAIN;
         $message->fullmessage = "
 Запрос на доступ:
 Студент: $user->firstname $user->lastname
