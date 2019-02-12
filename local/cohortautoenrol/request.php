@@ -2,11 +2,11 @@
 require_once '../../config.php';
 
 $contextid = required_param('contextid', PARAM_INT);
+$reason = strip_tags(optional_param('reason', '', PARAM_RAW));
 
 list($context, $course, $cm) = get_context_info_array($contextid);
-
 // Security.
-require_login($course, false, $cm);
+require_login();
 
 $categoryContext = $DB->get_record_sql("SELECT path FROM {context} WHERE contextlevel=40 AND instanceid=$course->category");
 $categoryContextPath = $categoryContext->path;
@@ -26,6 +26,8 @@ foreach($rows as $row) {
         $message = new \core\message\message();
         $message->component = 'moodle';
         $message->name = 'instantmessage';
+        $message->replyto = $USER->email;
+        $message->replytoname = $USER->fullname;
         $message->userfrom = $USER;
         $message->userto = $user;
         $message->subject = "ЛК Запрос - $user->firstname $user->lastname";
@@ -35,6 +37,7 @@ foreach($rows as $row) {
 Студент: $user->firstname $user->lastname
 Курс: $course->fullname
 Лекция: $cm->name
+Основание: $reason
 
 Проследуйте по ссылке, чтобы подтвердить запрос: $approveUrl
 ";

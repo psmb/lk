@@ -736,6 +736,68 @@ class core_course_renderer extends plugin_renderer_base {
             // No link, so display only content.
             $output = html_writer::tag('div', $content . $groupinglabel,
                     array('class' => 'contentwithoutlink ' . $textclasses));
+
+            // HACK request access link
+            global $DB, $USER;
+            $modContext = $DB->get_record_sql("SELECT id FROM {context} WHERE contextlevel=70 AND instanceid=$mod->id");
+            if (!$modContext) {
+                throw new \Exception('Context for mod not found!');
+            }
+
+            $requestUrl = '/local/cohortautoenrol/request.php';
+            $fileContextId = $modContext->id;
+            $fileName = $mod->name;
+
+            $modal = '
+<button class="btn btn-sm js-open-modal">Запросить бесплатный доступ</button>
+<button
+    class="btn btn-sm btn-primary js-donate"
+    data-email="' . $USER->email . '"
+    data-firstname="' . $USER->firstname . '"
+    data-lastname="' . $USER->lastname . '"
+    data-filename="' . $mod->name . '"
+    data-fileid="' . $mod->id . '"
+    >
+    Скачать за пожертвование
+</button>
+<div class="js-form-info"></div>
+<div class="modal moodle-has-zindex" data-region="modal-container" aria-hidden="false" role="dialog" style="z-index: 1052;">
+    <div class="modal-dialog modal-lg" role="document" data-region="modal" aria-labelledby="3-modal-title" tabindex="0">
+        <div class="modal-content">
+            <form autocomplete="off" method="post" accept-charset="utf-8" class="js-request-form">
+                <div class="modal-header " data-region="header">
+                    <h5 class="modal-title" data-region="title">Запрос на доступ к лекции: ' . $fileName . '</h5>
+                    <button type="button" class="close js-close-modal" data-action="hide" aria-label="Закрыть">×</button>
+                </div>
+                <div class="modal-body" data-region="body">
+                    <div style="display: none;">
+                        <input name="contextid" type="hidden" value="' . $fileContextId .'">
+                    </div>
+
+                    <fieldset class="clearfix containsadvancedelements">
+                        <div class="fcontainer clearfix">
+                            <div class="form-group row fitem">
+                                <div class="col-md-3">
+                                    <label class="col-form-label d-inline" for="reason">
+                                        Укажите на каком основании вы хотите прослушать данную лекцию бесплатно
+                                    </label>
+                                </div>
+                                <div class="col-md-9 form-inline felement" data-fieldtype="autocomplete">
+                                    <textarea name="reason" class="form-control" style="width: 100%; height: 100px;"></textarea>
+                                </div>
+                            </div>
+                        </div>
+                    </fieldset>
+                </div>
+                <div class="modal-footer" data-region="footer">
+                    <button type="submit" class="btn btn-primary js-submit-modal">Запросить бесплатный доступ к лекции</button>
+                    <button type="button" class="js-close-modal btn btn-secondary">Отмена</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>';
+            $output .= $modal;
         }
         return $output;
     }

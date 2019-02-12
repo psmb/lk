@@ -295,4 +295,77 @@
     // Include course AJAX
     include_course_ajax($course, $modnamesused);
 
+    // HACK
+    echo '
+<script src="https://widget.cloudpayments.ru/bundles/cloudpayments"></script>
+<script>
+function findParentModal(element) {
+    var current = element;
+    while (current) {
+        current = current.parentElement;
+        if (current.classList.contains("modal")) {
+            return current;
+        }
+    }
+    return null;
+}
+document.body.addEventListener("click", function (e) {
+    if (e.target.classList.contains("js-open-modal")) {
+        e.target.nextElementSibling.nextElementSibling.nextElementSibling.classList.add("show");
+    }
+    if (e.target.classList.contains("js-close-modal")) {
+        var modal = findParentModal(event.target);
+        modal.classList.remove("show");
+    }
+    if (e.target.classList.contains("js-donate")) {
+        var widget = new cp.CloudPayments();
+        var data = {
+            firstName: e.target.dataset.firstname,
+            lastName: e.target.dataset.lastname,
+            fileName: e.target.dataset.filename,
+            fileId: e.target.dataset.fileid,
+            referer: "projects",
+
+        };
+        widget.charge({
+            publicId: "pk_2675596d4fd86dca074a6d2e52b57",
+            description: "Пожертвование на Свято-Филаретовский православно-христианский институт",
+            amount: 50,
+            currency: "RUB",
+            accountId: e.target.dataset.email,
+            data: data
+        },
+        "http://sfi.ru/support/thanks.html",
+        function (reason, options) {
+            alert("Ошибка" + reason);
+        });
+    }
+});
+document.querySelectorAll(".js-request-form").forEach(form => {
+    form.addEventListener("submit", e => {
+        var modal = findParentModal(form);
+        var submitButton = modal.querySelector(".js-submit-modal");
+        submitButton.innerText = "Отправка запроса...";
+        submitButton.disabled = true;
+        var formData = new FormData(form);
+        var request = new XMLHttpRequest();
+        request.open("POST", "/local/cohortautoenrol/request.php", true);
+        request.onload = function () {
+            if (request.status >= 200 && request.status < 400) {
+                modal.previousElementSibling.innerHTML = \'<h4 style=\"font-weight: bold; color: #00b0f0\">Запрос отправлен. Ждите ответа от деканата.</h4>\';
+                modal.classList.remove("show");
+            } else {
+                modal.previousElementSibling.innerHTML = \'<h4 style=\"font-weight: bold; color: #d4383e\">Ошибка отправки запроса. Попробуйте снова или обратитесь за помощью.</h4>\';
+            }
+        };
+        request.onerror = function () {
+            modal.previousElementSibling.innerHTML = \'<h4 style=\"font-weight: bold; color: #d4383e\">Ошибка отправки запроса. Попробуйте снова или обратитесь за помощью.</h4>\';
+        };
+        request.send(formData);
+        e.preventDefault();
+        return false;
+    });
+});
+</script>';
+
     echo $OUTPUT->footer();
