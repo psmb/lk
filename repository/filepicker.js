@@ -1136,7 +1136,7 @@ M.core_filepicker.init = function(Y, options) {
             }
 
             // TODO MDL-32532: attributes 'hasauthor' and 'haslicense' need to be obsolete,
-            selectnode.one('.fp-setauthor input').set('value', args.author ? args.author : this.options.author);
+            selectnode.one('.fp-setauthor input').set('value', args.author ? args.author : '');
             this.set_selected_license(selectnode.one('.fp-setlicense'), args.license);
             selectnode.one('form #filesource-'+client_id).set('value', args.source);
             selectnode.one('form #filesourcekey-'+client_id).set('value', args.sourcekey);
@@ -1762,7 +1762,7 @@ M.core_filepicker.init = function(Y, options) {
                 content.one('.fp-file label').setContent(data.upload.label);
             }
             content.one('.fp-saveas input').set('name', 'title');
-            content.one('.fp-setauthor input').setAttrs({name:'author', value:this.options.author});
+            content.one('.fp-setauthor input').setAttrs({name:'author', value:''});
             content.one('.fp-setlicense select').set('name', 'license');
             this.populate_licenses_select(content.one('.fp-setlicense select'))
             // append hidden inputs to the upload form
