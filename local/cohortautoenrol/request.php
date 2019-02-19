@@ -22,7 +22,7 @@ foreach($rows as $row) {
         $userid = $row->userid;
         $user = $DB->get_record_sql("SELECT * FROM {user} where id = $userid");
 
-        $approveUrl = "https://kabinet.sfi.ru/local/cohortautoenrol/approve.php?contextid=$contextid&userid=$user->id";
+        $approveUrl = "https://kabinet.sfi.ru/local/cohortautoenrol/approve.php?contextid=$contextid&userid=$USER->id";
         $message = new \core\message\message();
         $message->component = 'moodle';
         $message->name = 'instantmessage';
