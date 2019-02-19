@@ -752,7 +752,7 @@ class core_course_renderer extends plugin_renderer_base {
             $fileContextId = $modContext->id;
             $fileName = $mod->name;
 
-            $requestAccessButton = '<button class="btn btn-sm js-open-modal">Запросить бесплатный доступ</button>';
+            $requestAccessButton = '<button class="btn btn-sm js-open-modal">Запросить доступ у деканата</button>';
             $donateButton = $file->author > 0 ? '
 <button
     class="btn btn-sm btn-primary js-donate"
