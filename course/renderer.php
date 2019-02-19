@@ -765,7 +765,7 @@ class core_course_renderer extends plugin_renderer_base {
     data-amount="' . $file->author . '"
     >
     Скачать за пожертвование
-</button>' : '';
+</button>' : '<span></span>'; // Awful hack to keep the number of elements the same
             $modal = '
 <div class="js-form-info"></div>
 <div class="modal moodle-has-zindex" data-region="modal-container" aria-hidden="false" role="dialog" style="z-index: 1052;">
