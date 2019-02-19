@@ -761,7 +761,7 @@ class core_course_renderer extends plugin_renderer_base {
     data-lastname="' . $USER->lastname . '"
     data-filename="' . $mod->name . '"
     data-userid="' . $USER->id . '"
-    data-contextid="' . $mod->id . '"
+    data-contextid="' . $fileContextId . '"
     data-amount="' . $file->author . '"
     >
     Скачать за пожертвование
