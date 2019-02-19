@@ -9,7 +9,7 @@ $roleid = 9;
 
 // Security.
 if ($key) {
-    if ($key === getenv('AUTOENROL_KEY')) {
+    if ($key !== getenv('AUTOENROL_KEY')) {
         throw new \Exception('Provided key is invalid!');
     }
 } else {
