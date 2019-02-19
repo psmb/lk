@@ -787,7 +787,7 @@ class core_files_renderer extends plugin_renderer_base {
                     </div>
                 </div>
                 <div class="fp-setauthor control-group clearfix">
-                    <label class="control-label">'.get_string('author', 'repository').'</label>
+                    <label class="control-label">Стоимость</label>
                     <div class="controls">
                         <input type="text"/>
                     </div>
@@ -857,7 +857,7 @@ class core_files_renderer extends plugin_renderer_base {
                     </div>
                 </div>
                 <div class="fp-setauthor control-group clearfix">
-                    <label class="control-label">'.get_string('author', 'repository').'</label>
+                    <label class="control-label">Стоимость</label>
                     <div class="controls">
                         <input type="text"/>
                     </div>

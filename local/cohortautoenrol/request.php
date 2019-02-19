@@ -42,7 +42,6 @@ foreach($rows as $row) {
 Проследуйте по ссылке, чтобы подтвердить запрос: $approveUrl
 ";
         $message->notification = '1';
-        $message->replyto = $user->email;
         $message->courseid = $course->id;
 
         try {

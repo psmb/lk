@@ -323,20 +323,23 @@ document.body.addEventListener("click", function (e) {
             firstName: e.target.dataset.firstname,
             lastName: e.target.dataset.lastname,
             fileName: e.target.dataset.filename,
-            fileId: e.target.dataset.fileid,
-            referer: "projects",
-
+            contextid: e.target.dataset.contextid,
+            userid: e.target.dataset.userid,
+            referer: "projects"
         };
         widget.charge({
             publicId: "pk_2675596d4fd86dca074a6d2e52b57",
             description: "Пожертвование на Свято-Филаретовский православно-христианский институт",
-            amount: 50,
+            amount: parseInt(e.target.dataset.amount),
             currency: "RUB",
             accountId: e.target.dataset.email,
+            email: e.target.dataset.email,
             data: data
         },
-        "http://sfi.ru/support/thanks.html",
-        function (reason, options) {
+        function () {
+            alert("Благодарим вас за пожертвование! В ближайшее время файл будет отправлен вам на почту.");
+        },
+        function (reason) {
             alert("Ошибка" + reason);
         });
     }

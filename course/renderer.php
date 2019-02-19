@@ -743,23 +743,30 @@ class core_course_renderer extends plugin_renderer_base {
             if (!$modContext) {
                 throw new \Exception('Context for mod not found!');
             }
+            $file = $DB->get_record_sql("SELECT id, author, filename FROM {files} WHERE filesize > 0 AND contextid=$modContext->id AND component = 'mod_resource' LIMIT 1");
+            if (!$file) {
+                throw new \Exception('File not found!');
+            }
 
             $requestUrl = '/local/cohortautoenrol/request.php';
             $fileContextId = $modContext->id;
             $fileName = $mod->name;
 
-            $modal = '
-<button class="btn btn-sm js-open-modal">Запросить бесплатный доступ</button>
+            $requestAccessButton = '<button class="btn btn-sm js-open-modal">Запросить бесплатный доступ</button>';
+            $donateButton = $file->author > 0 ? '
 <button
     class="btn btn-sm btn-primary js-donate"
     data-email="' . $USER->email . '"
     data-firstname="' . $USER->firstname . '"
     data-lastname="' . $USER->lastname . '"
     data-filename="' . $mod->name . '"
-    data-fileid="' . $mod->id . '"
+    data-userid="' . $USER->id . '"
+    data-contextid="' . $mod->id . '"
+    data-amount="' . $file->author . '"
     >
     Скачать за пожертвование
-</button>
+</button>' : '';
+            $modal = '
 <div class="js-form-info"></div>
 <div class="modal moodle-has-zindex" data-region="modal-container" aria-hidden="false" role="dialog" style="z-index: 1052;">
     <div class="modal-dialog modal-lg" role="document" data-region="modal" aria-labelledby="3-modal-title" tabindex="0">
@@ -797,7 +804,7 @@ class core_course_renderer extends plugin_renderer_base {
         </div>
     </div>
 </div>';
-            $output .= $modal;
+            $output .= ($requestAccessButton . $donateButton . $modal);
         }
         return $output;
     }
