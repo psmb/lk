@@ -25,6 +25,11 @@ if (
     !$key || // if not $key provided then it's a manual approval by admin, so no need to check price
     (is_numeric($file->author) && (int)$file->author <= $amount) // amount paid is greater than amount stored in author field (yup, we hijacked it)
 ) {
+    $alreadyAssigned = $DB->get_record_sql("SELECT * FROM {role_assignments} WHERE roleid=$roleid AND contextid=$contextid AND userid=$userid");
+    if ($alreadyAssigned) {
+        echo "Данный запрос уже был одобрен. Возможно вы перешли по этой ссылке дважды?";
+        die();
+    }
     role_assign($roleid, $userid, $contextid);
 
     $context = $DB->get_record_sql("SELECT instanceid FROM {context} WHERE contextlevel=70 AND id=$contextid");

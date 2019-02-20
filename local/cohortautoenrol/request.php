@@ -1,6 +1,8 @@
 <?php
 require_once '../../config.php';
 
+$adminRoleId = 18;
+
 $contextid = required_param('contextid', PARAM_INT);
 $reason = strip_tags(optional_param('reason', '', PARAM_RAW));
 
@@ -11,7 +13,7 @@ require_login();
 $categoryContext = $DB->get_record_sql("SELECT path FROM {context} WHERE contextlevel=40 AND instanceid=$course->category");
 $categoryContextPath = $categoryContext->path;
 
-$roles = "SELECT userid, path FROM {role_assignments} AS assignments JOIN {context} AS context ON assignments.contextid = context.id WHERE roleid=18";
+$roles = "SELECT userid, path FROM {role_assignments} AS assignments JOIN {context} AS context ON assignments.contextid = context.id WHERE roleid=$adminRoleId";
 $rows = $DB->get_recordset_sql($roles);
 $userid = null;
 $noAdminsFound = true;

@@ -346,11 +346,19 @@ document.body.addEventListener("click", function (e) {
 });
 document.querySelectorAll(".js-request-form").forEach(form => {
     form.addEventListener("submit", e => {
+        e.preventDefault();
+
+        var formData = new FormData(form);
+        if (!formData.get("reason")) {
+            alert("Пожалуйста заполните поле основания для запроса");
+            return false;
+        }
+
         var modal = findParentModal(form);
         var submitButton = modal.querySelector(".js-submit-modal");
         submitButton.innerText = "Отправка запроса...";
         submitButton.disabled = true;
-        var formData = new FormData(form);
+
         var request = new XMLHttpRequest();
         request.open("POST", "/local/cohortautoenrol/request.php", true);
         request.onload = function () {
@@ -365,7 +373,6 @@ document.querySelectorAll(".js-request-form").forEach(form => {
             modal.previousElementSibling.innerHTML = \'<h4 style=\"font-weight: bold; color: #d4383e\">Ошибка отправки запроса. Попробуйте снова или обратитесь за помощью.</h4>\';
         };
         request.send(formData);
-        e.preventDefault();
         return false;
     });
 });
