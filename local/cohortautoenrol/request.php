@@ -32,11 +32,11 @@ foreach($rows as $row) {
         $message->replytoname = $USER->fullname;
         $message->userfrom = $USER;
         $message->userto = $user;
-        $message->subject = "ЛК Запрос - $user->firstname $user->lastname";
+        $message->subject = "ЛК Запрос - $USER->firstname $USER->lastname";
         $message->fullmessageformat = FORMAT_PLAIN;
         $message->fullmessage = "
 Запрос на доступ:
-Студент: $user->firstname $user->lastname
+Студент: $USER->firstname $USER->lastname
 Курс: $course->fullname
 Лекция: $cm->name
 Основание: $reason
