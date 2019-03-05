@@ -39,16 +39,19 @@ if (
     $user = $DB->get_record_sql("SELECT * FROM {user} where id = $userid");
     $admin = $DB->get_record_sql("SELECT * FROM {user} where id = 2");
 
+    $messagehtml = "
+Вам доступен новый файл для скачивания: <a href=\"$link\">$link</a>
+";
+
     $message = new \core\message\message();
     $message->component = 'moodle';
     $message->name = 'instantmessage';
     $message->userfrom = $admin;
     $message->userto = $user;
     $message->subject = "Вам доступен файл - $file->filename";
-    $message->fullmessageformat = FORMAT_PLAIN;
-    $message->fullmessage = "
-Вам доступен новый файл для скачивания: $link
-";
+    $message->fullmessageformat = FORMAT_HTML;
+    $message->fullmessage = html_to_text($messagehtml);
+    $message->fullmessagehtml = $messagehtml;
     $message->notification = '1';
 
     try {

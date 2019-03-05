@@ -25,6 +25,16 @@ foreach($rows as $row) {
         $user = $DB->get_record_sql("SELECT * FROM {user} where id = $userid");
 
         $approveUrl = "https://kabinet.sfi.ru/local/cohortautoenrol/approve.php?contextid=$contextid&userid=$USER->id";
+        $messagehtml = "
+Запрос на доступ: <br>
+Студент: $USER->firstname $USER->lastname <br>
+Курс: $course->fullname <br>
+Лекция: $cm->name <br>
+Основание: $reason <br>
+<br>
+Проследуйте по ссылке, чтобы подтвердить запрос: <a href=\"$approveUrl\">$approveUrl</a>
+";
+
         $message = new \core\message\message();
         $message->component = 'moodle';
         $message->name = 'instantmessage';
@@ -33,16 +43,9 @@ foreach($rows as $row) {
         $message->userfrom = $USER;
         $message->userto = $user;
         $message->subject = "ЛК Запрос - $USER->firstname $USER->lastname";
-        $message->fullmessageformat = FORMAT_PLAIN;
-        $message->fullmessage = "
-Запрос на доступ:
-Студент: $USER->firstname $USER->lastname
-Курс: $course->fullname
-Лекция: $cm->name
-Основание: $reason
-
-Проследуйте по ссылке, чтобы подтвердить запрос: $approveUrl
-";
+        $message->fullmessageformat = FORMAT_HTML;
+        $message->fullmessage = html_to_text($messagehtml);
+        $message->fullmessagehtml = $messagehtml;
         $message->notification = '1';
         $message->courseid = $course->id;
 
