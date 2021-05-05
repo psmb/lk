@@ -2079,10 +2079,12 @@ class core_course_renderer extends plugin_renderer_base {
                     ));
             } else {
                 // All enrolled courses are displayed, display link to 'All courses' if there are more courses in system.
-                $chelper->set_courses_display_options(array(
-                        'viewmoreurl' => new moodle_url('/course/index.php'),
-                        'viewmoretext' => new lang_string('fulllistofcourses')
-                    ));
+
+                // @TODO HACK HACK HACK hide more courses link
+                // $chelper->set_courses_display_options(array(
+                //         'viewmoreurl' => new moodle_url('/course/index.php'),
+                //         'viewmoretext' => new lang_string('fulllistofcourses')
+                //     ));
                 $totalcount = $DB->count_records('course') - 1;
             }
             $chelper->set_show_courses(self::COURSECAT_SHOW_COURSES_EXPANDED)->
