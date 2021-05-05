@@ -245,6 +245,12 @@ foreach (explode(',', $frontpagelayout) as $v) {
                     get_string('skipa', 'access', core_text::strtolower(get_string('mycourses'))),
                     array('class' => 'skip skip-block'));
 
+                // @TODO HACK HACK HACK display user description on main page
+                $user = $DB->get_record('user', array('id' => $USER->id));
+                if ($user) {
+                    echo $user->description;
+                }
+
                 // Wrap frontpage course list in div container.
                 echo html_writer::start_tag('div', array('id' => 'frontpage-course-list'));
 
