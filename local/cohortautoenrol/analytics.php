@@ -1,5 +1,6 @@
 <?php
 require_once '../../config.php';
+
 # Sorry. There's something wrong with locales here
 $monthNames = [
   'Январь',
@@ -29,6 +30,10 @@ echo $OUTPUT->header();
 
 $auth = base64_encode(getenv('SFI_API_AUTH'));
 $context = stream_context_create([
+    "ssl"=> [
+        "verify_peer"=>false,
+        "verify_peer_name"=>false,
+    ],
     "http" => [
         "header" => "Authorization: Basic $auth"
     ]
@@ -77,7 +82,8 @@ foreach ($paymentsByMonth as $date => $payments) {
                 $file = $DB->get_record_sql("SELECT * FROM {files} WHERE filesize > 0 AND contextid=$data->contextid AND component = 'mod_resource' LIMIT 1", null, IGNORE_MISSING);
             $fileName = $file ? $file->filename : $data->fileName;
             $user = $DB->get_record_sql("SELECT * FROM {user} where id = $data->userid", null, IGNORE_MISSING);
-
+            $userEmail = '';
+            
             try {
             list($context, $course, $cm) = get_context_info_array($data->contextid);
             $path = explode('/', $context->path);
@@ -91,9 +97,7 @@ foreach ($paymentsByMonth as $date => $payments) {
             }
         }
 
-
-
-        echo "<tr>
+echo "<tr>
             <td><a target='_blank' href=\"https://merchant.cloudpayments.ru/transactions/$payment->TransactionId\">$payment->DateTime</a></td>
             <td>$payment->Amount</td>
             <td>$fileName</td>
