@@ -21,7 +21,7 @@ if (!$_GET['amount'] || !$_GET['email']) {
 var widget = new cp.CloudPayments();
 widget.charge(
 	{
-		publicId: 'pk_2675596d4fd86dca074a6d2e52b57',
+		publicId: 'pk_76f3a38f1ebea58ef0e9b816c957c',
 		description: 'Пожертвование на Свято-Филаретовский православно-христианский институт',
 		amount: <?=$_GET['amount']?>,
 		currency: 'RUB',
