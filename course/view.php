@@ -328,7 +328,7 @@ document.body.addEventListener("click", function (e) {
             referer: "projects"
         };
         widget.charge({
-            publicId: "pk_2675596d4fd86dca074a6d2e52b57",
+            publicId: "pk_1a899983c4a2b2b6c7be8ecac65cf",
             description: "Пожертвование на Свято-Филаретовский православно-христианский институт",
             amount: parseInt(e.target.dataset.amount),
             currency: "RUB",
