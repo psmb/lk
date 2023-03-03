@@ -725,6 +725,30 @@ class core_course_renderer extends plugin_renderer_base {
         $content = $mod->get_formatted_content(array('overflowdiv' => true, 'noclean' => true));
         list($linkclasses, $textclasses) = $this->course_section_cm_classes($mod);
         if ($mod->url && $mod->uservisible) {
+            global $DB, $USER;
+            
+            if ($USER->id == 1799) {
+                $modContext = $DB->get_record_sql("SELECT id FROM {context} WHERE contextlevel=70 AND instanceid=$mod->id");
+                if (!$modContext) {
+                    throw new \Exception('Context for mod not found!');
+                }
+                $file = $DB->get_record_sql("SELECT id, author, filename FROM {files} WHERE filesize > 0 AND contextid=$modContext->id AND component = 'mod_resource' LIMIT 1");
+                if (isset($file) && $file->author > 0) {
+                    $donateButton = '
+    <button
+        class="btn btn-sm btn-primary js-donate"
+        data-email="' . $USER->email . '"
+        data-firstname="' . $USER->firstname . '"
+        data-lastname="' . $USER->lastname . '"
+        data-filename="' . $mod->name . '"
+        data-userid="' . $USER->id . '"
+        data-amount="' . $file->author . '"
+        >
+        Пожертвовать за лекцию
+    </button>';
+                    $output .= $donateButton;
+                }
+            }
             if ($content) {
                 // If specified, display extra content after link.
                 $output = html_writer::tag('div', $content, array('class' =>
@@ -745,7 +769,7 @@ class core_course_renderer extends plugin_renderer_base {
             }
             $file = $DB->get_record_sql("SELECT id, author, filename FROM {files} WHERE filesize > 0 AND contextid=$modContext->id AND component = 'mod_resource' LIMIT 1");
             if (!$file) {
-                throw new \Exception('File not found!');
+                // throw new \Exception('File not found!');
             }
 
             $requestUrl = '/local/cohortautoenrol/request.php';
