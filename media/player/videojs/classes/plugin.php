@@ -144,7 +144,7 @@ class media_videojs_plugin extends core_media_player_native {
         }
 
         // HACK HACK HACK
-        $datasetup[] = '"playbackRates": [0.5, 1, 1.25, 1.5, 1.75, 2]';
+        $datasetup[] = '"playbackRates": [1, 1.25, 1.5, 1.75, 2]';
 
         // Attributes for the video/audio tag.
         // We use data-setup-lazy as the attribute name for the config instead of
