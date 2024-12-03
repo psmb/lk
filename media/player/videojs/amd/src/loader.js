@@ -74,11 +74,32 @@ define(['jquery', 'core/event'], function($, Event) {
                     modules.push('media_videojs/videojs-flash-lazy');
                 }
                 require(modules, function(videojs) {
-                    if (onload) {
-                        onload(videojs);
-                        onload = null;
+                  if (onload) {
+                    onload(videojs);
+                    onload = null;
+                  }
+                  
+                  var player = videojs(id, config);
+                  
+                  var userPaused = false;
+                  player.on("pause", () => {
+                    userPaused = Boolean(player.userActive());
+                  });
+                  player.on("playing", () => {
+                    userPaused = false;
+                  });
+                  document.addEventListener("visibilitychange", function () {
+                    if (document.visibilityState === "hidden" && !userPaused) {
+                      try {
+                        player.play();
+                      } catch (e) {
+                        console.warn(
+                          "Cannot play video while page is hidden.",
+                          e
+                        );
+                      }
                     }
-                    videojs(id, config);
+                  });
                 });
             });
     };
