@@ -788,7 +788,7 @@ class core_course_renderer extends plugin_renderer_base {
     data-contextid="' . $fileContextId . '"
     data-amount="' . $file->author . '"
     >
-    Скачать за пожертвование
+    Получить доступ за пожертвование
 </button>' : '<span></span>'; // Awful hack to keep the number of elements the same
             $modal = '
 <div class="js-form-info"></div>
