@@ -186,7 +186,8 @@ abstract class core_completion_edit_base_form extends moodleform {
             array(COMPLETION_TRACKING_NONE => get_string('completion_none', 'completion'),
                 COMPLETION_TRACKING_MANUAL => get_string('completion_manual', 'completion')));
         $mform->addHelpButton('completion', 'completion', 'completion');
-        $mform->setDefault('completion', COMPLETION_TRACKING_NONE);
+        // HACK HACK HACK
+        $mform->setDefault('completion', COMPLETION_TRACKING_MANUAL);
 
         // Automatic completion once you view it.
         $autocompletionpossible = false;
